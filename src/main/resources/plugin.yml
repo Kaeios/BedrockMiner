@@ -1,0 +1,5 @@
+name: ${project.artifactId}
+main: me.rellynn.plugins.bedrockminer.BedrockMiner
+author: Rellynn
+version: ${project.version}
+depend: [ProtocolLib]

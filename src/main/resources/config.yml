@@ -1,0 +1,10 @@
+# Config version. PLEASE DO NOT EDIT.
+config: 1.0
+
+# Base time to break bedrock. The unit is ticks (20 ticks = 1 second).
+base-time: 200
+
+# A list of different materials allowed to break bedrock. For the names you can go here:
+# https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+allowed-tools:
+- DIAMOND_PICKAXE
