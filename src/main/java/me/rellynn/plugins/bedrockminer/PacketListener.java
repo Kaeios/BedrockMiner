@@ -50,7 +50,7 @@ public class PacketListener extends PacketAdapter {
         Bukkit.getPluginManager().callEvent(breakEvt);
         if (!breakEvt.isCancelled()) {
             block.breakNaturally();
-            PacketUtils.sendBlockBreakEffectPacket(position, player);
+            PacketUtils.sendBlockBreakEffectPacket(position, Material.BEDROCK, player);
         }
     }
 
@@ -67,10 +67,11 @@ public class PacketListener extends PacketAdapter {
                 stopDigging(position, player);
                 break;
             case START_DESTROY_BLOCK:
-                ItemStack inHand = player.getItemInHand();
                 if (position.getY() < 5 || (player.getWorld().getEnvironment() == World.Environment.NETHER && position.getY() > 123)) {
                     return;
-                } else if (position.toLocation(player.getWorld()).getBlock().getType() != Material.BEDROCK || !plugin.allowedTools.contains(inHand.getType())) {
+                }
+                ItemStack inHand = player.getItemInHand();
+                if (position.toLocation(player.getWorld()).getBlock().getType() != Material.BEDROCK || !plugin.allowedTools.contains(inHand.getType())) {
                     return;
                 }
                 final long ticksPerStage = Math.round(plugin.baseTime / Math.pow(1.3, inHand.getEnchantmentLevel(Enchantment.DIG_SPEED)) / 9);

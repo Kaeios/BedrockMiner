@@ -27,11 +27,11 @@ public abstract class PacketUtils {
         }
     }
 
-    public static void sendBlockBreakEffectPacket(BlockPosition position, Player player) {
+    public static void sendBlockBreakEffectPacket(BlockPosition position, Material type, Player player) {
         PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.WORLD_EVENT);
         packet.getIntegers()
                 .write(0, 2001)
-                .write(1, Material.BEDROCK.getId());
+                .write(1, type.getId());
         packet.getBlockPositionModifier().write(0, position);
         packet.getBooleans().write(0, false);
         try {
@@ -40,5 +40,4 @@ public abstract class PacketUtils {
             e.printStackTrace();
         }
     }
-
 }
