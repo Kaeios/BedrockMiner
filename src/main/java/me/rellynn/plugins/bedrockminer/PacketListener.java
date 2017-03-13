@@ -32,11 +32,17 @@ public class PacketListener extends PacketAdapter {
         this.players = new WeakHashMap<>();
     }
 
-    private void stopDigging(BlockPosition position, Player player) {
+    private void stopDigging(final BlockPosition position, final Player player) {
         if (players.containsKey(player)) {
             Bukkit.getScheduler().cancelTask(players.remove(player));
+            new BukkitRunnable() {
+
+                @Override
+                public void run() {
+                    PacketUtils.sendBlockBreakAnimationPacket(position, -1, player);
+                }
+            }.runTaskLater(plugin, 1);
         }
-        PacketUtils.sendBlockBreakAnimationPacket(position, -1, player);
     }
 
     private void breakBlock(Block block, BlockPosition position, Player player) {
