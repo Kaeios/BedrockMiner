@@ -24,4 +24,9 @@ public class BedrockMiner extends JavaPlugin {
         baseTime = getConfig().getLong("base-time", 200);
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketListener(this));
     }
+
+    @Override
+    public void onDisable() {
+        ProtocolLibrary.getProtocolManager().removePacketListeners(this);
+    }
 }
