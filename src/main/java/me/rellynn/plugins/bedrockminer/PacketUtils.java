@@ -10,7 +10,6 @@ import org.bukkit.Material;
  * Created by gwennaelguich on 12/03/2017.
  */
 public abstract class PacketUtils {
-    private static int nextId = 11032000;
 
     public static void broadcastBlockBreakAnimationPacket(BlockPosition position, int stage) {
         PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
