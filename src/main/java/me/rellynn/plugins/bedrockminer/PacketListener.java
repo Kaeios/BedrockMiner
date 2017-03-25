@@ -5,10 +5,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.EnumWrappers.PlayerDigType;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -16,8 +13,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 /**
  * Created by gwennaelguich on 12/03/2017.
@@ -29,7 +26,7 @@ public class PacketListener extends PacketAdapter {
     PacketListener(BedrockMiner plugin) {
         super(plugin, PacketType.Play.Client.BLOCK_DIG);
         this.plugin = plugin;
-        this.players = new WeakHashMap<>();
+        this.players = new HashMap<>();
     }
 
     private void stopDigging(final BlockPosition position, final Player player) {
@@ -39,7 +36,7 @@ public class PacketListener extends PacketAdapter {
 
                 @Override
                 public void run() {
-                    PacketUtils.sendBlockBreakAnimationPacket(position, -1, player);
+                    PacketUtils.broadcastBlockBreakAnimationPacket(position, -1);
                 }
             }.runTaskLater(plugin, 1);
         }
@@ -50,7 +47,7 @@ public class PacketListener extends PacketAdapter {
         Bukkit.getPluginManager().callEvent(breakEvt);
         if (!breakEvt.isCancelled()) {
             block.breakNaturally();
-            PacketUtils.sendBlockBreakEffectPacket(position, Material.BEDROCK, player);
+            PacketUtils.broadcastBlockBreakEffectPacket(position, Material.BEDROCK);
         }
     }
 
@@ -70,21 +67,29 @@ public class PacketListener extends PacketAdapter {
                 if (position.getY() < 5 || (player.getWorld().getEnvironment() == World.Environment.NETHER && position.getY() > 123)) {
                     return;
                 }
-                ItemStack inHand = player.getItemInHand();
-                if (position.toLocation(player.getWorld()).getBlock().getType() != Material.BEDROCK || !plugin.allowedTools.contains(inHand.getType())) {
+                Location location = position.toLocation(player.getWorld());
+                if (!location.getChunk().isLoaded() || location.getBlock().getType() != Material.BEDROCK) {
                     return;
                 }
-                final long ticksPerStage = Math.round(plugin.baseTime / Math.pow(1.3, inHand.getEnchantmentLevel(Enchantment.DIG_SPEED)) / 9);
                 players.put(player, new BukkitRunnable() {
                     int ticks = 0;
 
                     @Override
                     public void run() {
+                        if (!player.isOnline()) {
+                            stopDigging(position, player);
+                            return;
+                        }
+                        ItemStack inHand = player.getItemInHand();
+                        if (!plugin.allowedTools.contains(inHand.getType())) {
+                            return;
+                        }
                         ticks += 5;
                         int stage;
+                        long ticksPerStage = Math.round(plugin.baseTime / Math.pow(1.3, inHand.getEnchantmentLevel(Enchantment.DIG_SPEED)) / 9);
                         Block block = position.toLocation(player.getWorld()).getBlock();
                         if (block.getType() == Material.BEDROCK && ticksPerStage != 0 && (stage = (int) (ticks / ticksPerStage)) <= 9) {
-                            PacketUtils.sendBlockBreakAnimationPacket(position, stage, player);
+                            PacketUtils.broadcastBlockBreakAnimationPacket(position, stage);
                         } else {
                             stopDigging(position, player);
                             if (block.getType() == Material.BEDROCK)
