@@ -2,9 +2,11 @@
 config: 1.0
 
 # Base time to break bedrock. The unit is ticks (20 ticks = 1 second).
+# Efficiency enchantment affect this time.
 base-time: 200
 
-# A list of different materials allowed to break bedrock. For the names you can go here:
-# https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
-allowed-tools:
-- DIAMOND_PICKAXE
+tool:
+  # Pick allowed to break bedrock
+  type: GOLD_PICKAXE
+  # Level of silk touch needed to break bedrock, 0 mean not enchanted
+  silk-level: 1

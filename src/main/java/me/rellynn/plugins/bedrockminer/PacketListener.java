@@ -18,71 +18,70 @@ import java.util.Map;
 
 /**
  * Created by gwennaelguich on 12/03/2017.
+ * Edited by Kaeios on 14/03/2019
  */
-public class PacketListener extends PacketAdapter {
-    private BedrockMiner plugin;
-    private Map<Player, Integer> players;
+public final class PacketListener extends PacketAdapter {
 
-    PacketListener(BedrockMiner plugin) {
+    private final BedrockMiner plugin;
+    private final Map<Player, Integer> players;
+
+    PacketListener(final BedrockMiner plugin) {
         super(plugin, PacketType.Play.Client.BLOCK_DIG);
         this.plugin = plugin;
         this.players = new HashMap<>();
     }
 
     private void stopDigging(final BlockPosition position, final Player player) {
-        if (players.containsKey(player)) {
-            Bukkit.getScheduler().cancelTask(players.remove(player));
-            new BukkitRunnable() {
-
-                @Override
-                public void run() {
-                    PacketUtils.broadcastBlockBreakAnimationPacket(position, -1);
-                }
-            }.runTaskLater(plugin, 1);
-        }
+        if(!players.containsKey(player)) return;
+        Bukkit.getScheduler().cancelTask(players.remove(player));
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PacketUtils.broadcastBlockBreakAnimationPacket(position, -1);
+            }
+        }.runTaskLater(plugin, 1);
     }
 
-    private void breakBlock(Block block, BlockPosition position, Player player) {
-        BlockBreakEvent breakEvt = new BlockBreakEvent(block, player);
+    private void breakBlock(final Block block, final BlockPosition position, final Player player) {
+        final BlockBreakEvent breakEvt = new BlockBreakEvent(block, player);
         Bukkit.getPluginManager().callEvent(breakEvt);
-        if (!breakEvt.isCancelled()) {
-            block.breakNaturally();
-            PacketUtils.broadcastBlockBreakEffectPacket(position, Material.BEDROCK);
-        }
+        if(breakEvt.isCancelled()) return;
+        block.breakNaturally();
+        PacketUtils.broadcastBlockBreakEffectPacket(position, Material.BEDROCK);
     }
 
-    public void onPacketReceiving(PacketEvent evt) {
+    public void onPacketReceiving(final PacketEvent evt) {
         final Player player = evt.getPlayer();
         if (player.getGameMode() == GameMode.CREATIVE) {
             return;
         }
         final BlockPosition position = evt.getPacket().getBlockPositionModifier().read(0);
-        PlayerDigType type = evt.getPacket().getPlayerDigTypes().read(0);
+        final PlayerDigType type = evt.getPacket().getPlayerDigTypes().read(0);
         switch (type) {
             case ABORT_DESTROY_BLOCK:
             case STOP_DESTROY_BLOCK:
                 stopDigging(position, player);
                 break;
             case START_DESTROY_BLOCK:
-                if (position.getY() < 5 || (player.getWorld().getEnvironment() == World.Environment.NETHER && position.getY() > 123)) {
-                    return;
-                }
-                Location location = position.toLocation(player.getWorld());
-                if (!location.getChunk().isLoaded() || location.getBlock().getType() != Material.BEDROCK) {
-                    return;
-                }
+                if (position.getY() < 5 || (player.getWorld().getEnvironment() == World.Environment.NETHER && position.getY() > 123)) return;
+                final Location location = position.toLocation(player.getWorld());
+                if (!location.getChunk().isLoaded() || location.getBlock().getType() != Material.BEDROCK) return;
+
                 players.put(player, new BukkitRunnable() {
                     int ticks = 0;
-
                     @Override
                     public void run() {
                         if (!player.isOnline()) {
                             stopDigging(position, player);
                             return;
                         }
-                        ItemStack inHand = player.getItemInHand();
-                        if (!plugin.allowedTools.contains(inHand.getType())) {
-                            return;
+                        final ItemStack inHand = player.getItemInHand();
+                        if (!plugin.getConfig().getString("tool.type").equals(inHand.getType().toString())) return;
+                        final int silkLevel = plugin.getConfig().getInt("tool.silk-level");
+                        if(!inHand.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)){
+                            if(silkLevel != 0) return;
+                        }else{
+                            if(inHand.getItemMeta().getEnchantLevel(Enchantment.SILK_TOUCH) < silkLevel) return;
                         }
                         ticks += 5;
                         int stage;
@@ -92,8 +91,7 @@ public class PacketListener extends PacketAdapter {
                             PacketUtils.broadcastBlockBreakAnimationPacket(position, stage);
                         } else {
                             stopDigging(position, player);
-                            if (block.getType() == Material.BEDROCK)
-                                breakBlock(block, position, player);
+                            if (block.getType() == Material.BEDROCK) breakBlock(block, position, player);
                         }
                     }
                 }.runTaskTimer(plugin, 0, 5).getTaskId());

@@ -11,8 +11,8 @@ import org.bukkit.Material;
  */
 public abstract class PacketUtils {
 
-    public static void broadcastBlockBreakAnimationPacket(BlockPosition position, int stage) {
-        PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
+    public static void broadcastBlockBreakAnimationPacket(final BlockPosition position, final int stage) {
+        final PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
         packet.getIntegers()
                 .write(0, 0)
                 .write(1, stage);
@@ -20,7 +20,7 @@ public abstract class PacketUtils {
         ProtocolLibrary.getProtocolManager().broadcastServerPacket(packet);
     }
 
-    public static void broadcastBlockBreakEffectPacket(BlockPosition position, Material type) {
+    public static void broadcastBlockBreakEffectPacket(final BlockPosition position, final Material type) {
         PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.WORLD_EVENT);
         packet.getIntegers()
                 .write(0, 2001)
