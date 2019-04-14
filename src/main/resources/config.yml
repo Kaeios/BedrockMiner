@@ -1,9 +1,12 @@
 # Config version. PLEASE DO NOT EDIT.
-config: 1.0
+config: 1.1
 
 # Base time to break bedrock. The unit is ticks (20 ticks = 1 second).
 # Efficiency enchantment affect this time.
 base-time: 200
+
+# Set to true if you want bedrock blocks to be dropped.
+drop-bedrock: false
 
 tool:
   # Pick allowed to break bedrock

@@ -15,6 +15,11 @@ public final class BedrockMiner extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         baseTime = getConfig().getLong("base-time", 200);
+        if(getConfig().getDouble("config") == 1.0){
+            getConfig().set("config", 1.1);
+            getConfig().set("drop-bedrock", false);
+            saveConfig();
+        }
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketListener(this));
     }
 

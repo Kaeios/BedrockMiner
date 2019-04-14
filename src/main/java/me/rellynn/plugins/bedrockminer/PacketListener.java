@@ -46,6 +46,9 @@ public final class PacketListener extends PacketAdapter {
         final BlockBreakEvent breakEvt = new BlockBreakEvent(block, player);
         Bukkit.getPluginManager().callEvent(breakEvt);
         if(breakEvt.isCancelled()) return;
+        if(plugin.getConfig().getBoolean("drop-bedrock", false)){
+            block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.5, 0.5), new ItemStack(block.getType()));
+        }
         block.breakNaturally();
         PacketUtils.broadcastBlockBreakEffectPacket(position, Material.BEDROCK);
     }
@@ -85,7 +88,7 @@ public final class PacketListener extends PacketAdapter {
                         }
                         ticks += 5;
                         int stage;
-                        long ticksPerStage = Math.round(plugin.baseTime / Math.pow(1.3, inHand.getEnchantmentLevel(Enchantment.DIG_SPEED)) / 9);
+                        final long ticksPerStage = Math.round(plugin.baseTime / Math.pow(1.3, inHand.getEnchantmentLevel(Enchantment.DIG_SPEED)) / 9);
                         Block block = position.toLocation(player.getWorld()).getBlock();
                         if (block.getType() == Material.BEDROCK && ticksPerStage != 0 && (stage = (int) (ticks / ticksPerStage)) <= 9) {
                             PacketUtils.broadcastBlockBreakAnimationPacket(position, stage);
