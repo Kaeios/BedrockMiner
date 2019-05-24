@@ -66,7 +66,7 @@ public final class PacketListener extends PacketAdapter {
                 stopDigging(position, player);
                 break;
             case START_DESTROY_BLOCK:
-                if (position.getY() < 5 || (player.getWorld().getEnvironment() == World.Environment.NETHER && position.getY() > 123)) return;
+                if (position.getY() < plugin.getConfig().getInt("protection-height", 5) || (player.getWorld().getEnvironment() == World.Environment.NETHER && position.getY() > 123)) return;
                 final Location location = position.toLocation(player.getWorld());
                 if (!location.getChunk().isLoaded() || location.getBlock().getType() != Material.BEDROCK) return;
 
