@@ -3,6 +3,9 @@ package me.rellynn.plugins.bedrockminer;
 import com.comphenix.protocol.ProtocolLibrary;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 /**
  * Created by gwennaelguich on 12/03/2017.
  * Edited by Kaeios on 14/03/2019
@@ -23,6 +26,10 @@ public final class BedrockMiner extends JavaPlugin {
         if(getConfig().getDouble("config") == 1.2){
             getConfig().set("config", 1.3);
             getConfig().set("break-blocks.BEDROCK", getConfig().getInt("base-time", 200));
+        }
+        if(getConfig().getDouble("config") == 1.3){
+            getConfig().set("config", 1.4);
+            getConfig().set("tool.type", Collections.singletonList(getConfig().getString("tool.type")));
         }
         saveConfig();
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketListener(this));

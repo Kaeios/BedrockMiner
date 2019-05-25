@@ -79,7 +79,7 @@ public final class PacketListener extends PacketAdapter {
                             return;
                         }
                         final ItemStack inHand = player.getItemInHand();
-                        if (!plugin.getConfig().getString("tool.type").equals(inHand.getType().toString())) return;
+                        if (!plugin.getConfig().getString("tool.type").contains(inHand.getType().toString())) return;
                         final int silkLevel = plugin.getConfig().getInt("tool.silk-level");
                         if(!inHand.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)){
                             if(silkLevel != 0) return;
