@@ -9,12 +9,9 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public final class BedrockMiner extends JavaPlugin {
 
-    long baseTime;
-
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        baseTime = getConfig().getLong("base-time", 200);
         if(getConfig().getDouble("config") == 1.0){
             getConfig().set("config", 1.1);
             getConfig().set("drop-bedrock", false);
@@ -22,6 +19,10 @@ public final class BedrockMiner extends JavaPlugin {
         if(getConfig().getDouble("config") == 1.1){
             getConfig().set("config", 1.2);
             getConfig().set("protection-height", 5);
+        }
+        if(getConfig().getDouble("config") == 1.2){
+            getConfig().set("config", 1.3);
+            getConfig().set("break-blocks.BEDROCK", getConfig().getInt("base-time", 200));
         }
         saveConfig();
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketListener(this));

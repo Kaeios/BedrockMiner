@@ -1,9 +1,5 @@
 # Config version. PLEASE DO NOT EDIT.
-config: 1.2
-
-# Base time to break bedrock. The unit is ticks (20 ticks = 1 second).
-# Efficiency enchantment affect this time.
-base-time: 200
+config: 1.3
 
 # Set to true if you want bedrock blocks to be dropped.
 drop-bedrock: false
@@ -16,3 +12,13 @@ tool:
   type: GOLD_PICKAXE
   # Level of silk touch needed to break bedrock, 0 mean not enchanted
   silk-level: 1
+
+# List of blocks you can break with the pickaxe
+break-blocks:
+  # Material name : time to break block. The unit is ticks (20 ticks = 1 second).
+  # 0 ticks = instant break
+  # Efficiency enchantment affect this time.
+  #
+  # Material list: https://pastebin.com/nNxKj43t
+  BEDROCK: 200
+  ENDER_PORTAL_FRAME: 500

@@ -50,7 +50,7 @@ public final class PacketListener extends PacketAdapter {
             block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.5, 0.5), new ItemStack(block.getType()));
         }
         block.breakNaturally();
-        PacketUtils.broadcastBlockBreakEffectPacket(position, Material.BEDROCK);
+        PacketUtils.broadcastBlockBreakEffectPacket(position, block.getType());
     }
 
     public void onPacketReceiving(final PacketEvent evt) {
@@ -68,7 +68,7 @@ public final class PacketListener extends PacketAdapter {
             case START_DESTROY_BLOCK:
                 if (position.getY() < plugin.getConfig().getInt("protection-height", 5) || (player.getWorld().getEnvironment() == World.Environment.NETHER && position.getY() > 123)) return;
                 final Location location = position.toLocation(player.getWorld());
-                if (!location.getChunk().isLoaded() || location.getBlock().getType() != Material.BEDROCK) return;
+                if (!location.getChunk().isLoaded() || !plugin.getConfig().isInt("break-blocks." + location.getBlock().getType().toString())) return;
 
                 players.put(player, new BukkitRunnable() {
                     int ticks = 0;
@@ -88,13 +88,13 @@ public final class PacketListener extends PacketAdapter {
                         }
                         ticks += 5;
                         int stage;
-                        final long ticksPerStage = Math.round(plugin.baseTime / Math.pow(1.3, inHand.getEnchantmentLevel(Enchantment.DIG_SPEED)) / 9);
-                        Block block = position.toLocation(player.getWorld()).getBlock();
-                        if (block.getType() == Material.BEDROCK && ticksPerStage != 0 && (stage = (int) (ticks / ticksPerStage)) <= 9) {
+                        final Block block = position.toLocation(player.getWorld()).getBlock();
+                        final long ticksPerStage = Math.round(plugin.getConfig().getInt("break-blocks."+ block.getType().toString(), 200) / Math.pow(1.3, inHand.getEnchantmentLevel(Enchantment.DIG_SPEED)) / 9);
+                        if (plugin.getConfig().isInt("break-blocks."+ block.getType().toString()) && ticksPerStage != 0 && (stage = (int) (ticks / ticksPerStage)) <= 9) {
                             PacketUtils.broadcastBlockBreakAnimationPacket(position, stage);
                         } else {
                             stopDigging(position, player);
-                            if (block.getType() == Material.BEDROCK) breakBlock(block, position, player);
+                            if (plugin.getConfig().isInt("break-blocks."+ block.getType().toString())) breakBlock(block, position, player);
                         }
                     }
                 }.runTaskTimer(plugin, 0, 5).getTaskId());
