@@ -47,9 +47,9 @@ public final class PacketListener extends PacketAdapter {
         Bukkit.getPluginManager().callEvent(breakEvt);
         if(breakEvt.isCancelled()) return;
         if(plugin.getConfig().getBoolean("drop-bedrock", false)){
-            block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.5, 0.5), new ItemStack(block.getType()));
+            block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.5, 0.5), new ItemStack(block.getType(), 1));
         }
-        block.breakNaturally();
+        block.setType(Material.AIR);
         PacketUtils.broadcastBlockBreakEffectPacket(position, block.getType());
     }
 
