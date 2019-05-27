@@ -55,9 +55,8 @@ public final class PacketListener extends PacketAdapter {
 
     public void onPacketReceiving(final PacketEvent evt) {
         final Player player = evt.getPlayer();
-        if (player.getGameMode() == GameMode.CREATIVE) {
-            return;
-        }
+        if (player.getGameMode().equals(GameMode.CREATIVE)) return;
+        if (!player.hasPermission("bedrockminer.break")) return;
         final BlockPosition position = evt.getPacket().getBlockPositionModifier().read(0);
         final PlayerDigType type = evt.getPacket().getPlayerDigTypes().read(0);
         switch (type) {
