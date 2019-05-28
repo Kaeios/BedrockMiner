@@ -12,6 +12,11 @@ import org.bukkit.Material;
  */
 public abstract class PacketUtils {
 
+    /**
+     * display break animation to everyone
+     * @param position position of the block
+     * @param stage stage of the animation
+     */
     public static void broadcastBlockBreakAnimationPacket(final BlockPosition position, final int stage) {
         final PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
         packet.getIntegers()
@@ -21,6 +26,11 @@ public abstract class PacketUtils {
         ProtocolLibrary.getProtocolManager().broadcastServerPacket(packet);
     }
 
+    /**
+     * display break effect to everyone
+     * @param position position of the block
+     * @param type type of the block
+     */
     public static void broadcastBlockBreakEffectPacket(final BlockPosition position, final Material type) {
         final PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.WORLD_EVENT);
         packet.getIntegers()
