@@ -87,13 +87,13 @@ public final class PacketListener extends PacketAdapter {
 
                         ticks += 5;
                         int stage;
-                        final Block block = position.toLocation(player.getWorld()).getBlock();
+                        final Block block = location.getBlock();
                         final long ticksPerStage = Math.round(plugin.getConfig().getInt("break-blocks."+ block.getType().toString(), 200) / Math.pow(1.3, inHand.getEnchantmentLevel(Enchantment.DIG_SPEED)) / 9);
-                        if (plugin.getConfig().isInt("break-blocks."+ block.getType().toString()) && ticksPerStage != 0 && (stage = (int) (ticks / ticksPerStage)) <= 9) {
+                        if (plugin.getConfig().isInt("break-blocks."+ blockType.toString()) && ticksPerStage != 0 && (stage = (int) (ticks / ticksPerStage)) <= 9) {
                             PacketUtils.broadcastBlockBreakAnimationPacket(position, stage);
                         } else {
                             stopDigging(position, player);
-                            if (plugin.getConfig().isInt("break-blocks."+ block.getType().toString())) breakBlock(block, position, player);
+                            if (plugin.getConfig().isInt("break-blocks."+ blockType.toString())) breakBlock(block, position, player);
                         }
                     }
                 }.runTaskTimer(plugin, 0, 5).getTaskId());
