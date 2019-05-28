@@ -3,7 +3,6 @@ package me.rellynn.plugins.bedrockminer;
 import com.comphenix.protocol.ProtocolLibrary;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 /**
