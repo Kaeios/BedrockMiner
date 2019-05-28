@@ -8,6 +8,7 @@ import org.bukkit.Material;
 
 /**
  * Created by gwennaelguich on 12/03/2017.
+ * Edited by Kaeios on 5/28/2019
  */
 public abstract class PacketUtils {
 
@@ -21,7 +22,7 @@ public abstract class PacketUtils {
     }
 
     public static void broadcastBlockBreakEffectPacket(final BlockPosition position, final Material type) {
-        PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.WORLD_EVENT);
+        final PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.WORLD_EVENT);
         packet.getIntegers()
                 .write(0, 2001)
                 .write(1, type.getId());
