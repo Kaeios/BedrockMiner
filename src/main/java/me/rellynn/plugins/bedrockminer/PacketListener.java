@@ -74,9 +74,11 @@ public final class PacketListener extends PacketAdapter {
                 // Natural bedrock mining protection
                 if (position.getY() < plugin.getConfig().getInt("protection-height", 5) || (player.getWorld().getEnvironment() == World.Environment.NETHER && position.getY() > 123)) return;
                 final Location location = position.toLocation(player.getWorld());
+                // Make sure chunk is loaded
+                if(!location.getWorld().isChunkLoaded(location.getBlockX() >> 4, location.getBlockY() >> 4)) return;
                 final Material blockType = location.getBlock().getType();
                 // Check if block is breakable & is player have permission
-                if (!location.getChunk().isLoaded() || !plugin.getConfig().isInt("break-blocks." + blockType.toString())) return;
+                if (!plugin.getConfig().isInt("break-blocks." + blockType.toString())) return;
                 if (!player.hasPermission("bedrockminer."+ blockType.toString().toLowerCase())) return;
 
                 // Create scheduler for animation
