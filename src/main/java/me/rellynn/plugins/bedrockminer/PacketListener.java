@@ -11,7 +11,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,25 +22,18 @@ import java.util.Map;
 public final class PacketListener extends PacketAdapter {
 
     private final BedrockMiner plugin;
-    private final Map<Player, Integer> players;
+    private final Map<Player, Integer> players = new HashMap<>();
 
     public PacketListener(final BedrockMiner plugin) {
         super(plugin, PacketType.Play.Client.BLOCK_DIG);
         this.plugin = plugin;
-        this.players = new HashMap<>();
     }
 
     private void stopDigging(final BlockPosition position, final Player player) {
         if(!players.containsKey(player)) return;
         Bukkit.getScheduler().cancelTask(players.remove(player));
-        // This runnable is useful to fix a weird bug with Bungeecord
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                // Stop the break animation (-1 is the default stage of the animation)
-                PacketUtils.broadcastBlockBreakAnimationPacket(position, -1);
-            }
-        }.runTaskLater(plugin, 1);
+        // Stop the break animation (-1 is the default stage of the animation)
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, ()-> PacketUtils.broadcastBlockBreakAnimationPacket(position, -1), 1L);
     }
 
     private void breakBlock(final Block block, final BlockPosition position, final Player player) {
@@ -82,23 +74,20 @@ public final class PacketListener extends PacketAdapter {
                 if (!player.hasPermission("bedrockminer."+ blockType.toString().toLowerCase())) return;
 
                 // Create scheduler for animation
-                players.put(player, new BukkitRunnable() {
+                players.put(player, Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin ,new Runnable() {
                     int ticks = 0;
                     @Override
                     public void run() {
                         // If player disconnect from the server, stop animation & scheduler
-                        if (!player.isOnline()) {
+                        final ItemStack inHand = player.getItemInHand();
+                        final int silkLevel = plugin.getConfig().getInt("tool.silk-level");
+
+                        if (!player.isOnline()
+                                || !plugin.getConfig().getString("tool.type").contains(inHand.getType().toString())
+                                || inHand.getItemMeta().getEnchantLevel(Enchantment.SILK_TOUCH) < silkLevel) {
                             stopDigging(position, player);
                             return;
                         }
-
-                        // Check if item used to break blocks is whitelisted
-                        final ItemStack inHand = player.getItemInHand();
-                        if (!plugin.getConfig().getString("tool.type").contains(inHand.getType().toString())) return;
-
-                        // Check silk touch level
-                        final int silkLevel = plugin.getConfig().getInt("tool.silk-level");
-                        if(inHand.getItemMeta().getEnchantLevel(Enchantment.SILK_TOUCH) < silkLevel) return;
 
                         ticks += 5;
                         // Update animation
@@ -112,7 +101,7 @@ public final class PacketListener extends PacketAdapter {
                             if (plugin.getConfig().isInt("break-blocks."+ blockType.toString())) breakBlock(block, position, player);
                         }
                     }
-                }.runTaskTimer(plugin, 0, 5).getTaskId());
+                },0L, 5L));
                 break;
         }
     }
