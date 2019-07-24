@@ -14,6 +14,16 @@ public final class BedrockMiner extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        upgradeConfig();
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketListener(this));
+    }
+
+    @Override
+    public void onDisable() {
+        ProtocolLibrary.getProtocolManager().removePacketListeners(this);
+    }
+
+    private void upgradeConfig(){
         if(getConfig().getDouble("config") == 1.0){
             getConfig().set("config", 1.1);
             getConfig().set("drop-bedrock", false);
@@ -31,11 +41,6 @@ public final class BedrockMiner extends JavaPlugin {
             getConfig().set("tool.type", Collections.singletonList(getConfig().getString("tool.type")));
         }
         saveConfig();
-        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketListener(this));
     }
 
-    @Override
-    public void onDisable() {
-        ProtocolLibrary.getProtocolManager().removePacketListeners(this);
-    }
 }
