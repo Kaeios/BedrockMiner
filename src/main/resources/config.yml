@@ -1,9 +1,6 @@
 # Config version. PLEASE DO NOT EDIT.
 config: 1.5
 
-# Set to true if you want bedrock blocks to be dropped.
-drop-bedrock: false
-
 # Set 0 to disable protection
 protection-height: 5
 
