@@ -49,11 +49,12 @@ public final class PacketListener extends PacketAdapter {
 
         final Configuration config = plugin.getConfig();
         // Damage pickaxe
-        final int damage = config.getInt("break-blocks."+ block.getType() +".durability", 1);
-        player.getItemInHand().setDurability((short) (player.getItemInHand().getDurability()+damage-1));
+        final int damage = config.getInt("break-blocks."+ block.getType().toString() +".durability", 1);
+        player.getItemInHand().setDurability((short) (player.getItemInHand().getDurability()+damage));
         // Check if pickaxe is broken
         if(player.getItemInHand().getDurability() > player.getItemInHand().getType().getMaxDurability())
             player.setItemInHand(null);
+        player.updateInventory();
 
         // Destroy block with setType() to prevent dropping
         block.setType(Material.AIR);
