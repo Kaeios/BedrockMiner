@@ -40,6 +40,16 @@ public final class BedrockMiner extends JavaPlugin {
             getConfig().set("config", 1.4);
             getConfig().set("tool.type", Collections.singletonList(getConfig().getString("tool.type")));
         }
+        if(getConfig().getDouble("config") == 1.4){
+            getConfig().set("config", 1.5);
+            getConfig().getConfigurationSection("break-blocks").getKeys(false).forEach(block ->{
+                final int duration = getConfig().getInt("break-blocks."+ block, 300);
+                getConfig().set("break-blocks."+ block, null);
+                getConfig().set("break-blocks."+ block +".duration", duration);
+                getConfig().set("break-blocks."+ block +".durability", 1);
+                getConfig().set("break-blocks."+ block +".drop", getConfig().getBoolean("drop-bedrock"));
+            });
+        }
         saveConfig();
     }
 
