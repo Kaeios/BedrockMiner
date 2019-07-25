@@ -1,5 +1,5 @@
 # Config version. PLEASE DO NOT EDIT.
-config: 1.4
+config: 1.5
 
 # Set to true if you want bedrock blocks to be dropped.
 drop-bedrock: false
@@ -21,5 +21,13 @@ break-blocks:
   # Efficiency enchantment affect this time.
   #
   # Material list: https://pastebin.com/nNxKj43t
-  BEDROCK: 200
-  ENDER_PORTAL_FRAME: 500
+  BEDROCK:
+    duration: 300
+    durability: 1
+    # Set to true if you want bedrock blocks to be dropped.
+    drop: false
+  ENDER_PORTAL_FRAME:
+    duration: 500
+    durability: 2
+    # Set to true if you want bedrock blocks to be dropped.
+    drop: false
