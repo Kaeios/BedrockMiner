@@ -13,18 +13,22 @@ tool:
 
 # List of blocks you can break with the pickaxe
 break-blocks:
-  # Material name : time to break block. The unit is ticks (20 ticks = 1 second).
-  # 0 ticks = instant break
-  # Efficiency enchantment affect this time.
-  #
+  # Material name
   # Material list: https://pastebin.com/nNxKj43t
   BEDROCK:
+    # Time to break that block in ticks (affected by efficiency)
+    # 0 ticks = instant break
+    # Efficiency enchantment affect this time.
     duration: 300
+    # Durability cost (pickaxe durability)
     durability: 1
-    # Set to true if you want bedrock blocks to be dropped.
+    # Set to true if you want the block to be dropped.
     drop: false
+  # Material name
   ENDER_PORTAL_FRAME:
+    # Time to break that block in ticks
     duration: 500
+    # Durability cost (pickaxe durability)
     durability: 2
-    # Set to true if you want bedrock blocks to be dropped.
+    # Set to true if you want the block to be dropped.
     drop: false
