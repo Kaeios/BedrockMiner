@@ -7,6 +7,7 @@ import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.EnumWrappers.PlayerDigType;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -42,9 +43,17 @@ public final class PacketListener extends PacketAdapter {
         Bukkit.getPluginManager().callEvent(breakEvt);
         if(breakEvt.isCancelled()) return;
 
-
-        if(plugin.getConfig().getBoolean("drop-bedrock", false))
+        // Drop block
+        if(plugin.getConfig().getBoolean("break-blocks."+ block.getType() + ".drop", false))
             block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.5, 0.5), new ItemStack(block.getType(), 1));
+
+        final Configuration config = plugin.getConfig();
+        // Damage pickaxe
+        final int damage = config.getInt("break-blocks."+ block.getType() +".durability", 1);
+        player.getItemInHand().setDurability((short) (player.getItemInHand().getDurability()+damage-1));
+        // Check if pickaxe is broken
+        if(player.getItemInHand().getDurability() > player.getItemInHand().getType().getMaxDurability())
+            player.setItemInHand(null);
 
         // Destroy block with setType() to prevent dropping
         block.setType(Material.AIR);
@@ -70,7 +79,7 @@ public final class PacketListener extends PacketAdapter {
                 if(!location.getWorld().isChunkLoaded(location.getBlockX() >> 4, location.getBlockY() >> 4)) return;
                 final Material blockType = location.getBlock().getType();
                 // Check if block is breakable & is player have permission
-                if (!plugin.getConfig().isInt("break-blocks." + blockType.toString())) return;
+                if (!plugin.getConfig().isInt("break-blocks." + blockType.toString() +".duration")) return;
                 if (!player.hasPermission("bedrockminer."+ blockType.toString().toLowerCase())) return;
 
                 // Create scheduler for animation
@@ -93,12 +102,12 @@ public final class PacketListener extends PacketAdapter {
                         // Update animation
                         int stage;
                         final Block block = location.getBlock();
-                        final long ticksPerStage = Math.round(plugin.getConfig().getInt("break-blocks."+ block.getType().toString(), 200) / Math.pow(1.3, inHand.getEnchantmentLevel(Enchantment.DIG_SPEED)) / 9);
-                        if (plugin.getConfig().isInt("break-blocks."+ blockType.toString()) && ticksPerStage != 0 && (stage = (int) (ticks / ticksPerStage)) <= 9) {
+                        final long ticksPerStage = Math.round(plugin.getConfig().getInt("break-blocks."+ block.getType().toString() + ".duration", 300) / Math.pow(1.3, inHand.getEnchantmentLevel(Enchantment.DIG_SPEED)) / 9);
+                        if (plugin.getConfig().isInt("break-blocks."+ blockType.toString() +".duration") && ticksPerStage != 0 && (stage = (int) (ticks / ticksPerStage)) <= 9) {
                             PacketUtils.broadcastBlockBreakAnimationPacket(position, stage);
                         } else {
                             stopDigging(position, player);
-                            if (plugin.getConfig().isInt("break-blocks."+ blockType.toString())) breakBlock(block, position, player);
+                            if (plugin.getConfig().isInt("break-blocks."+ blockType.toString() + ".duration")) breakBlock(block, position, player);
                         }
                     }
                 },0L, 5L));
