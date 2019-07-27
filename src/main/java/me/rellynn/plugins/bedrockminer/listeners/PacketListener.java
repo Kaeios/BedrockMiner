@@ -1,10 +1,12 @@
-package me.rellynn.plugins.bedrockminer;
+package me.rellynn.plugins.bedrockminer.listeners;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.EnumWrappers.PlayerDigType;
+import me.rellynn.plugins.bedrockminer.BedrockMiner;
+import me.rellynn.plugins.bedrockminer.PacketUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.Configuration;
