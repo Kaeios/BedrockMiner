@@ -90,11 +90,8 @@ public final class PacketListener extends PacketAdapter {
                     public void run() {
                         // If player disconnect from the server, stop animation & scheduler
                         final ItemStack inHand = player.getItemInHand();
-                        final int silkLevel = plugin.getConfig().getInt("tool.silk-level");
 
-                        if (!player.isOnline()
-                                || !plugin.getConfig().getString("tool.type").contains(inHand.getType().toString())
-                                || inHand.getItemMeta().getEnchantLevel(Enchantment.SILK_TOUCH) < silkLevel) {
+                        if (!player.isOnline() || !plugin.isTool(inHand)) {
                             stopDigging(position, player);
                             return;
                         }
