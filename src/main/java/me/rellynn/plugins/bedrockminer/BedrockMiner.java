@@ -68,7 +68,7 @@ public final class BedrockMiner extends JavaPlugin {
                 getConfig().set("tool." + index +".name", "");
                 getConfig().set("tool." + index +".lore", Collections.emptyList());
                 if(silkLevel <= 0) continue;
-                getConfig().set("tool."+ index +".enchantments."+ Enchantment.SILK_TOUCH.toString(), silkLevel);
+                getConfig().set("tool."+ index +".enchantments."+ Enchantment.SILK_TOUCH.getName(), silkLevel);
             }
             getConfig().set("tool.type", null);
         }

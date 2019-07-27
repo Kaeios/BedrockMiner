@@ -16,17 +16,16 @@ public class BedrockTool {
     private final Map<Enchantment, Integer> enchants;
 
     public BedrockTool(Material material, String name, List<String> lore, Map<Enchantment, Integer> enchants) {
+        if(lore == null) lore = Collections.emptyList();
         this.material = material;
         this.name = name;
         this.lore = lore;
         this.enchants = enchants;
-
-        if(lore == null) lore = Collections.emptyList();
     }
 
     public boolean matchItem(final ItemStack item) {
         if (!item.getType().equals(material)) return false;
-        if (!item.getItemMeta().getDisplayName().equals(name)) return false;
+        if (!name.equals("") && !item.getItemMeta().getDisplayName().equals(name)) return false;
         if (!lore.isEmpty() && !item.getItemMeta().hasLore()) return false;
         if (!lore.isEmpty() && !item.getItemMeta().getLore().equals(lore)) return false;
         for (final Enchantment enchant : enchants.keySet()) {
