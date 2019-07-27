@@ -1,15 +1,18 @@
 # Config version. PLEASE DO NOT EDIT.
-config: 1.5
+config: 1.6
 
 # Set 0 to disable protection
 protection-height: 5
 
 tool:
-  # Pick allowed to break bedrock
-  type:
-    - GOLD_PICKAXE
-  # Level of silk touch needed to break bedrock, 0 mean not enchanted
-  silk-level: 1
+  '1':
+    tool: GOLD_PICKAXE
+    name: "§cBedrock Pickaxe"
+    lore:
+      - "§7This tool allow you to break"
+      - "§7bedrock blocks."
+    enchantments:
+      SILK_TOUCH: 1
 
 # List of blocks you can break with the pickaxe
 break-blocks:
