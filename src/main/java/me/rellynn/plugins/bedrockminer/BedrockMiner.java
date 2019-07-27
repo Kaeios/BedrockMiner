@@ -1,6 +1,8 @@
 package me.rellynn.plugins.bedrockminer;
 
 import com.comphenix.protocol.ProtocolLibrary;
+import me.rellynn.plugins.bedrockminer.commands.BedrockCommand;
+import me.rellynn.plugins.bedrockminer.listeners.PacketListener;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
@@ -23,6 +25,7 @@ public final class BedrockMiner extends JavaPlugin {
         upgradeConfig();
         loadTools();
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketListener(this));
+        getCommand("bedrockminer").setExecutor(new BedrockCommand(this));
     }
 
     @Override
@@ -94,6 +97,10 @@ public final class BedrockMiner extends JavaPlugin {
             if(tool.matchItem(item)) return true;
         }
         return false;
+    }
+
+    public List<BedrockTool> getTools(){
+        return new ArrayList<>(tools);
     }
 
 }

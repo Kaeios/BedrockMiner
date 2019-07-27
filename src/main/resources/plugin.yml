@@ -3,3 +3,8 @@ main: me.rellynn.plugins.bedrockminer.BedrockMiner
 authors: [Rellynn, Kaeios]
 version: ${project.version}
 depend: [ProtocolLib]
+commands:
+  bedrockminer:
+    aliases: [bminer, bedrock]
+    permission: bedrockminer.command.give
+    usage: /<command> <subcommand> <arguments>
