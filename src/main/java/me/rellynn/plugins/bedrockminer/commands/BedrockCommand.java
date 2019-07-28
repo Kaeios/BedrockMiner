@@ -56,7 +56,7 @@ public class BedrockCommand implements CommandExecutor {
         int index = 0;
         for(BedrockTool tool : plugin.getTools()){
             final TextComponent text = new TextComponent("§8[§c"+ index++ +"§8] §e" + (tool.getName().equals("") ? tool.getMaterial().toString() : tool.getName()));
-            if(!(commandSender instanceof Player)) {
+            if(!(commandSender instanceof Player) || !plugin.isSpigot()) {
                 commandSender.sendMessage(text.getText());
                 return;
             }

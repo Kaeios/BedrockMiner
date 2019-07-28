@@ -18,6 +18,7 @@ import java.util.*;
 public final class BedrockMiner extends JavaPlugin {
 
     private final List<BedrockTool> tools = new ArrayList<>();
+    private boolean spigot = false;
 
     @Override
     public void onEnable() {
@@ -26,6 +27,7 @@ public final class BedrockMiner extends JavaPlugin {
         loadTools();
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketListener(this));
         getCommand("bedrockminer").setExecutor(new BedrockCommand(this));
+        spigot = getServer().getVersion().contains("Spigot");
     }
 
     @Override
@@ -110,6 +112,10 @@ public final class BedrockMiner extends JavaPlugin {
 
     public List<BedrockTool> getTools(){
         return new ArrayList<>(tools);
+    }
+
+    public boolean isSpigot() {
+        return spigot;
     }
 
 }
