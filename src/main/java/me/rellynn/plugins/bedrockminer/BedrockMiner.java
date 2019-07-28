@@ -75,6 +75,13 @@ public final class BedrockMiner extends JavaPlugin {
             }
             getConfig().set("tool.type", null);
         }
+        if(getConfig().getDouble("config") == 1.6){
+            getConfig().set("config", 1.7);
+            for(final String tool : getConfig().getConfigurationSection("tool").getKeys(false)){
+                getConfig().set("tool."+ tool +".durability", -1);
+                getConfig().set("tool."+ tool +".repairable", true);
+            }
+        }
         saveConfig();
     }
 
@@ -82,13 +89,15 @@ public final class BedrockMiner extends JavaPlugin {
         final ConfigurationSection section = getConfig().getConfigurationSection("tool");
         section.getKeys(false).forEach(key ->{
             final Material material = Material.valueOf(section.getString(key+".tool"));
-            final String name = section.getString(key+".name");
+            final String name = section.getString(key+".name", "");
             final List<String> lore = section.getStringList(key+".lore");
+            final int durability = section.getInt(key +".durability", -1);
+            final boolean repairable = section.getBoolean(key + ".repairable", true);
             final Map<Enchantment, Integer> enchants = new HashMap<>();
             section.getConfigurationSection(key +".enchantments").getKeys(false).forEach(enchant ->{
                 enchants.put(Enchantment.getByName(enchant.toUpperCase()), section.getInt(key +".enchantments."+ enchant));
             });
-            tools.add(new BedrockTool(material, name, lore, enchants));
+            tools.add(new BedrockTool(material, name, lore, enchants, (short) durability, repairable));
         });
     }
 
