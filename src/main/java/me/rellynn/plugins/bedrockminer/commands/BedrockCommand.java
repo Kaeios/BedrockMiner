@@ -33,7 +33,7 @@ public class BedrockCommand implements CommandExecutor {
                 } else {
                     try {
                         final int tool = Integer.valueOf(args[2]);
-                        if(plugin.getTools().size() < tool) {
+                        if(tool >= plugin.getTools().size() || tool < 0) {
                             commandSender.sendMessage("§cInvalid tool id");
                         }else {
                             player.getInventory().addItem(plugin.getTools().get(tool).getItem());
@@ -58,11 +58,12 @@ public class BedrockCommand implements CommandExecutor {
         commandSender.sendMessage("§eList of tools:");
         int index = 0;
         for(BedrockTool tool : plugin.getTools()){
-            final TextComponent text = new TextComponent("§8[§c"+ index++ +"§8] §e" + (tool.getName().equals("") ? tool.getMaterial().toString() : tool.getName()));
+            final String helpText = "§8[§c"+ index++ +"§8] §e" + (tool.getName().equals("") ? tool.getMaterial().toString() : tool.getName());
             if(!(commandSender instanceof Player) || !plugin.isSpigot()) {
-                commandSender.sendMessage(text.getText());
+                commandSender.sendMessage(helpText);
                 return;
             }
+            final TextComponent text = new TextComponent(helpText);
             final BaseComponent[] hoverText = new BaseComponent[4 + tool.getLore().size() + tool.getEnchants().size()];
             hoverText[0] = new TextComponent("§cName: §e"+ (tool.getName().equals("") ? "none" : tool.getName()) +"\n");
             hoverText[1] = new TextComponent("§cMaterial: §e"+ tool.getMaterial().toString() +"\n");
