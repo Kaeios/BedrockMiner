@@ -7,14 +7,14 @@ protection-height: 5
 tool:
   '1':
     tool: GOLD_PICKAXE
-    name: "§cBedrock Pickaxe"
+    name: "&cBedrock Pickaxe"
     # Set 0 or -1 for full durability
     durability: 0
     # true if it can be repaired in an anvil otherwise false (don't work with /repair plugin)
     repairable: true
     lore:
-      - "§7This tool allow you to break"
-      - "§7bedrock blocks."
+      - "&7This tool allow you to break"
+      - "&7bedrock blocks."
     enchantments:
       SILK_TOUCH: 1
 
