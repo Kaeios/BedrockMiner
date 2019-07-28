@@ -79,7 +79,7 @@ public final class PacketListener extends PacketAdapter {
                 if (position.getY() < plugin.getConfig().getInt("protection-height", 5) || (player.getWorld().getEnvironment() == World.Environment.NETHER && position.getY() > 123)) return;
                 final Location location = position.toLocation(player.getWorld());
                 // Make sure chunk is loaded
-                if(!location.getWorld().isChunkLoaded(location.getBlockX() >> 4, location.getBlockY() >> 4)) return;
+                if(!location.getWorld().isChunkLoaded(location.getBlockX() >> 4, location.getBlockZ() >> 4)) return;
                 final Material blockType = location.getBlock().getType();
                 // Check if block is breakable & is player have permission
                 if (!plugin.getConfig().isInt("break-blocks." + blockType.toString() +".duration")) return;
