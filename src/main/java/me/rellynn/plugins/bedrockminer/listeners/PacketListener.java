@@ -44,17 +44,24 @@ public final class PacketListener extends PacketAdapter {
         // Use a block break event to be compatible with protection plugins
         Bukkit.getPluginManager().callEvent(breakEvt);
         if(breakEvt.isCancelled()) return;
+        final Material blockType = block.getType();
+        final Configuration config = plugin.getConfig();
 
         // Drop block
-        if(plugin.getConfig().getBoolean("break-blocks."+ block.getType() + ".drop", false))
-            block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.5, 0.5), new ItemStack(block.getType(), 1));
+        if(config.getBoolean("break-blocks."+ blockType.toString() + ".drop", false)){
+            if(!block.getDrops().isEmpty()){
+                block.breakNaturally(player.getItemInHand());
+            } else {
+                block.setType(Material.AIR);
+                block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(blockType, 1));
+            }
+        }
 
-        final Configuration config = plugin.getConfig();
         // Damage pickaxe
-        final int damage = config.getInt("break-blocks."+ block.getType().toString() +".durability", 1);
+        final int damage = config.getInt("break-blocks."+ blockType.toString() +".durability", 1);
         player.getItemInHand().setDurability((short) (player.getItemInHand().getDurability()+damage));
         // Check if pickaxe is broken
-        if(player.getItemInHand().getDurability() > player.getItemInHand().getType().getMaxDurability())
+        if(player.getItemInHand().getDurability() >= player.getItemInHand().getType().getMaxDurability())
             player.setItemInHand(null);
         player.updateInventory();
 
