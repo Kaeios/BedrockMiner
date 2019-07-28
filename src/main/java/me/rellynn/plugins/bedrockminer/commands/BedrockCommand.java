@@ -24,6 +24,7 @@ public class BedrockCommand implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
         if(args.length == 1 && args[0].equalsIgnoreCase("reload")){
             plugin.reloadConfig();
+            commandSender.sendMessage("§aPlugin reloaded.");
         }else if(args.length == 3){
             if(args[0].equals("give")) {
                 final Player player = Bukkit.getPlayer(args[1]);
