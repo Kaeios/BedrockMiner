@@ -31,6 +31,13 @@ public final class BedrockMiner extends JavaPlugin {
     }
 
     @Override
+    public void reloadConfig(){
+        super.reloadConfig();
+        tools.clear();
+        loadTools();
+    }
+
+    @Override
     public void onDisable() {
         ProtocolLibrary.getProtocolManager().removePacketListeners(this);
     }
