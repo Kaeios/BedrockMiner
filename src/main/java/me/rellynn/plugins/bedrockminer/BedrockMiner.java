@@ -91,6 +91,19 @@ public final class BedrockMiner extends JavaPlugin {
                 getConfig().set("tool."+ tool +".repairable", true);
             }
         }
+        if(getConfig().getDouble("config") == 1.7){
+            getConfig().set("config", 1.8);
+            getConfig().set("regions-list-is-whitelist", true);
+            getConfig().set("regions-list", Collections.singletonList("no-bedrock-break"));
+
+            getConfig().set("default-world-settings.enabled", true);
+            getConfig().set("default-world-settings.min-height", 5);
+            getConfig().set("default-world-settings.max-height", 256);
+
+            getConfig().set("worlds-settings.world_nether.enabled", true);
+            getConfig().set("worlds-settings.world_nether.min-height", 5);
+            getConfig().set("worlds-settings.world_nether.max-height", 123);
+        }
         saveConfig();
     }
 
