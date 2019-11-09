@@ -7,6 +7,7 @@ import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.EnumWrappers.PlayerDigType;
 import me.rellynn.plugins.bedrockminer.BedrockMiner;
 import me.rellynn.plugins.bedrockminer.PacketUtils;
+import me.rellynn.plugins.bedrockminer.WorldSetting;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.Configuration;
@@ -82,9 +83,9 @@ public final class PacketListener extends PacketAdapter {
                 stopDigging(position, player);
                 break;
             case START_DESTROY_BLOCK:
-                // Natural bedrock mining protection
-                if (position.getY() < plugin.getConfig().getInt("protection-height", 5) || (player.getWorld().getEnvironment() == World.Environment.NETHER && position.getY() > 123)) return;
                 final Location location = position.toLocation(player.getWorld());
+                // Natural bedrock mining protection
+                if (!isValidWorld(location)) return;
                 // Make sure chunk is loaded
                 if(!location.getWorld().isChunkLoaded(location.getBlockX() >> 4, location.getBlockZ() >> 4)) return;
                 final Material blockType = location.getBlock().getType();
@@ -121,4 +122,16 @@ public final class PacketListener extends PacketAdapter {
                 break;
         }
     }
+
+    private boolean isValidWorld(final Location location){
+        boolean isValid = new WorldSetting(location.getWorld().getName(), plugin.getConfig().getInt("default-world-settings.min-height", 5), plugin.getConfig().getInt("default-world-settings.max-height", 256), plugin.getConfig().getBoolean("default-world-settings.enabled", true)).isValidLocation(location).equals(WorldSetting.LocationStatus.ALLOW);
+
+        for (WorldSetting worldSetting : plugin.getWorldSettings()) {
+            if(worldSetting.isValidLocation(location).equals(WorldSetting.LocationStatus.ALLOW)) return true;
+            if(worldSetting.isValidLocation(location).equals(WorldSetting.LocationStatus.DENY)) return false;
+        }
+
+        return isValid;
+    }
+
 }

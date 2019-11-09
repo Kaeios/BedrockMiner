@@ -1,9 +1,6 @@
 # Config version. PLEASE DO NOT EDIT.
 config: 1.8
 
-# Set 0 to disable protection
-protection-height: 5
-
 tool:
   '1':
     tool: GOLD_PICKAXE
@@ -39,14 +36,6 @@ break-blocks:
     durability: 2
     # Set to true if you want the block to be dropped.
     drop: false
-
-# true - You can't break bedrock in regions by default
-# false - You can break bedrock in regions by default
-regions-list-is-whitelist: false
-
-# list of regions to blacklist or whitelist, it depend on "regions-list-is-whitelist" settings
-regions-list:
-  - no-bedrock-break
 
 # Default world settings
 default-world-settings:

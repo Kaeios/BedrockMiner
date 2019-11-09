@@ -18,6 +18,8 @@ import java.util.*;
 public final class BedrockMiner extends JavaPlugin {
 
     private final List<BedrockTool> tools = new ArrayList<>();
+
+    private final List<WorldSetting> worldSettings = new ArrayList<>();
     private boolean spigot = false;
 
     @Override
@@ -25,9 +27,22 @@ public final class BedrockMiner extends JavaPlugin {
         saveDefaultConfig();
         upgradeConfig();
         loadTools();
+        loadWorldSettings();
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketListener(this));
         getCommand("bedrockminer").setExecutor(new BedrockCommand(this));
         spigot = getServer().getVersion().contains("Spigot");
+    }
+
+    private void loadWorldSettings() {
+        final ConfigurationSection section = getConfig().getConfigurationSection("worlds-settings");
+        section.getKeys(false).forEach(world ->{
+            final String name = world;
+            final boolean enabled = section.getBoolean(world + ".enabled", true);
+            final int min = section.getInt(world + ".min-height", 5);
+            final int max = section.getInt(world + ".max-height", 256);
+
+            worldSettings.add(new WorldSetting(name, min, max, enabled));
+        });
     }
 
     @Override
@@ -35,6 +50,8 @@ public final class BedrockMiner extends JavaPlugin {
         super.reloadConfig();
         tools.clear();
         loadTools();
+        worldSettings.clear();
+        loadWorldSettings();
     }
 
     @Override
@@ -97,12 +114,14 @@ public final class BedrockMiner extends JavaPlugin {
             getConfig().set("regions-list", Collections.singletonList("no-bedrock-break"));
 
             getConfig().set("default-world-settings.enabled", true);
-            getConfig().set("default-world-settings.min-height", 5);
+            getConfig().set("default-world-settings.min-height", getConfig().getInt("protection-height"));
             getConfig().set("default-world-settings.max-height", 256);
 
             getConfig().set("worlds-settings.world_nether.enabled", true);
-            getConfig().set("worlds-settings.world_nether.min-height", 5);
+            getConfig().set("worlds-settings.world_nether.min-height", getConfig().getInt("protection-height"));
             getConfig().set("worlds-settings.world_nether.max-height", 123);
+
+            getConfig().set("protection-height", null);
         }
         saveConfig();
     }
@@ -136,6 +155,10 @@ public final class BedrockMiner extends JavaPlugin {
 
     public boolean isSpigot() {
         return spigot;
+    }
+
+    public List<WorldSetting> getWorldSettings() {
+        return worldSettings;
     }
 
 }
