@@ -135,10 +135,14 @@ public final class BedrockMiner extends JavaPlugin {
             final int durability = section.getInt(key +".durability", -1);
             final boolean repairable = section.getBoolean(key + ".repairable", true);
             final Map<Enchantment, Integer> enchants = new HashMap<>();
+
             section.getConfigurationSection(key +".enchantments").getKeys(false).forEach(enchant ->{
                 enchants.put(Enchantment.getByName(enchant.toUpperCase()), section.getInt(key +".enchantments."+ enchant));
             });
-            tools.add(new BedrockTool(material, name, lore, enchants, (short) durability, repairable));
+
+            final int modelData = section.getInt(key +".modelData", 259121534); // 259121534 is just an arbitrary integer that is supposedly unique and won't interfere with other plugins
+
+            tools.add(new BedrockTool(material, name, lore, enchants, (short) durability, repairable, modelData));
         });
     }
 

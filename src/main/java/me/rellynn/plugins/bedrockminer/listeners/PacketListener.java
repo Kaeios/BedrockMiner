@@ -91,7 +91,7 @@ public final class PacketListener extends PacketAdapter {
                 final Material blockType = location.getBlock().getType();
                 // Check if block is breakable & is player have permission
                 if (!plugin.getConfig().isInt("break-blocks." + blockType.toString() +".duration")) return;
-                if (!player.hasPermission("bedrockminer."+ blockType.toString().toLowerCase())) return;
+                if (!player.hasPermission("bedrockminer.break."+ blockType.toString().toLowerCase())) return;
 
                 // Create scheduler for animation
                 players.put(player, Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin ,new Runnable() {

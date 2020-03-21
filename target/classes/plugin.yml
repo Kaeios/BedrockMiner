@@ -1,0 +1,10 @@
+name: BedrockMiner
+main: me.rellynn.plugins.bedrockminer.BedrockMiner
+authors: [Rellynn, Kaeios]
+version: 1.4.0
+depend: [ProtocolLib]
+commands:
+  bedrockminer:
+    aliases: [bminer, bedrock]
+    permission: bedrockminer.command.give
+    usage: /<command> <subcommand> <arguments>

@@ -1,0 +1,9 @@
+me/rellynn/plugins/bedrockminer/BedrockMiner.class
+me/rellynn/plugins/bedrockminer/listeners/PacketListener.class
+me/rellynn/plugins/bedrockminer/listeners/PacketListener$2.class
+me/rellynn/plugins/bedrockminer/BedrockTool.class
+me/rellynn/plugins/bedrockminer/commands/BedrockCommand.class
+me/rellynn/plugins/bedrockminer/PacketUtils.class
+me/rellynn/plugins/bedrockminer/WorldSetting.class
+me/rellynn/plugins/bedrockminer/listeners/PacketListener$1.class
+me/rellynn/plugins/bedrockminer/WorldSetting$LocationStatus.class
