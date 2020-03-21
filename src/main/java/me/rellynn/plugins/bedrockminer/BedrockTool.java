@@ -50,7 +50,7 @@ public class BedrockTool {
 //            if (item.getEnchantmentLevel(enchant) < enchants.get(enchant)) return false;
 //        }
 
-        if (item.getItemMeta().hasCustomModelData() && !(item.getItemMeta().getCustomModelData() == modelData)) return false;
+        if (!(item.getItemMeta().getCustomModelData() == modelData)) return false;
 
         return true;
     }
@@ -80,6 +80,8 @@ public class BedrockTool {
         final ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(name);
         meta.setLore(lore);
+        meta.setCustomModelData(modelData);
+
         enchants.forEach((enchant, level) -> meta.addEnchant(enchant, level, true));
         if(meta instanceof Repairable && !repairable)
             ((Repairable) meta).setRepairCost(50);

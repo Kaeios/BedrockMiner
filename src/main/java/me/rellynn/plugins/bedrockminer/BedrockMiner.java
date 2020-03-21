@@ -140,7 +140,7 @@ public final class BedrockMiner extends JavaPlugin {
                 enchants.put(Enchantment.getByName(enchant.toUpperCase()), section.getInt(key +".enchantments."+ enchant));
             });
 
-            final int modelData = section.getInt(key +".modelData", 259121534); // 259121534 is just an arbitrary integer that is supposedly unique and won't interfere with other plugins
+            final int modelData = section.getInt(key +".modelData", 15912153); // 15912153 is just an arbitrary integer that is supposedly unique and won't interfere with other plugins
 
             tools.add(new BedrockTool(material, name, lore, enchants, (short) durability, repairable, modelData));
         });
