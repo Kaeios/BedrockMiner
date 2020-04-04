@@ -98,6 +98,7 @@ public final class PacketListener extends PacketAdapter {
 
     public void onPacketReceiving(final PacketEvent evt) {
         final Player player = evt.getPlayer();
+        if(player == null || !player.isOnline()) return;
         // Creative player can break everything
         if (player.getGameMode().equals(GameMode.CREATIVE)) return;
         final BlockPosition position = evt.getPacket().getBlockPositionModifier().read(0);
