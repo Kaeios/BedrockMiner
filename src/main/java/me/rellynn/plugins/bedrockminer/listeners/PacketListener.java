@@ -15,9 +15,12 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by gwennaelguich on 12/03/2017.
@@ -27,6 +30,7 @@ public final class PacketListener extends PacketAdapter {
 
     private final BedrockMiner plugin;
     private final Map<Player, Integer> players = new HashMap<>();
+    Random r = new Random();
 
     public PacketListener(final BedrockMiner plugin) {
         super(plugin, PacketType.Play.Client.BLOCK_DIG);
@@ -55,15 +59,36 @@ public final class PacketListener extends PacketAdapter {
             } else {
                 block.setType(Material.AIR);
                 block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(blockType, 1));
+
+                player.playSound(block.getLocation(), Sound.BLOCK_STONE_BREAK, SoundCategory.BLOCKS, (float) 1.0, (float) 0.8); // Basically the generic block breaking sound. Needed because player isn't actually breaking bedrock, just we are faking it!!!
             }
         }
 
         // Damage pickaxe
-        final int damage = config.getInt("break-blocks."+ blockType.toString() +".durability", 1);
+        int damage = config.getInt("break-blocks."+ blockType.toString() +".durability", 1);
+        final Map<Enchantment, Integer> enchants = player.getItemInHand().getEnchantments();
+
+        if (enchants.containsKey(Enchantment.DURABILITY)) {
+            // Unbreaking
+            int level = enchants.get(Enchantment.DURABILITY); // Unbreaking Level
+            int unbreaking_reduction = (100 / (level + 1)); // How likely should damage be ignored
+
+            int chance = r.nextInt(101); // Should be range 0 - 100
+
+            if (chance > unbreaking_reduction) {
+                // The unbreaking_reduction lowers as unbreaking gets higher, so you want the random number generator to ignore damage if chance is greater than unbreaking_reduction
+                damage = 0;
+            }
+        }
+
         player.getItemInHand().setDurability((short) (player.getItemInHand().getDurability()+damage));
+
         // Check if pickaxe is broken
-        if(player.getItemInHand().getDurability() >= player.getItemInHand().getType().getMaxDurability())
+        if(player.getItemInHand().getDurability() >= player.getItemInHand().getType().getMaxDurability()) {
             player.setItemInHand(null);
+            player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, (float) 1.0, (float) 0.9); // Basically the generic tool breaking sound. Same reason as block breaking sound. We aren't actually mining the block, so it doesn't actually break if "mining" an unmineable block. Therefore, the tool breaking sound won't play by default.
+        }
+
         player.updateInventory();
 
         // Destroy block with setType() to prevent dropping
@@ -91,7 +116,7 @@ public final class PacketListener extends PacketAdapter {
                 final Material blockType = location.getBlock().getType();
                 // Check if block is breakable & is player have permission
                 if (!plugin.getConfig().isInt("break-blocks." + blockType.toString() +".duration")) return;
-                if (!player.hasPermission("bedrockminer."+ blockType.toString().toLowerCase())) return;
+                if (!player.hasPermission("bedrockminer.break."+ blockType.toString().toLowerCase())) return;
 
                 // Create scheduler for animation
                 players.put(player, Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin ,new Runnable() {
@@ -110,7 +135,18 @@ public final class PacketListener extends PacketAdapter {
                         // Update animation
                         int stage;
                         final Block block = location.getBlock();
-                        final long ticksPerStage = Math.round(plugin.getConfig().getInt("break-blocks."+ block.getType().toString() + ".duration", 300) / Math.pow(1.3, inHand.getEnchantmentLevel(Enchantment.DIG_SPEED)) / 9);
+                        long ticksPerStage = Math.round(plugin.getConfig().getInt("break-blocks."+ block.getType().toString() + ".duration", 300) / Math.pow(1.3, inHand.getEnchantmentLevel(Enchantment.DIG_SPEED)) / 9);
+
+                        if (player.hasPotionEffect(PotionEffectType.FAST_DIGGING)) {
+                            // Haste Effect - 20% Faster Speed Per Level
+                            PotionEffect haste = player.getPotionEffect(PotionEffectType.FAST_DIGGING);
+
+                            assert haste != null;
+                            // Note: This may or may not be a janky way of calculating how much faster a player should mine, but it seems consistent with vanilla's interpretation of haste given my testing I performed.
+                            ticks += haste.getAmplifier() + 1; // 0 is Haste 1, 1 is Haste 2
+                        }
+
+                        //ticksPerStage = ticksPerStage
                         if (plugin.getConfig().isInt("break-blocks."+ blockType.toString() +".duration") && ticksPerStage != 0 && (stage = (int) (ticks / ticksPerStage)) <= 9) {
                             PacketUtils.broadcastBlockBreakAnimationPacket(position, stage);
                         } else {

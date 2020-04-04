@@ -4,6 +4,9 @@ config: 1.8
 tool:
   '1':
     tool: GOLD_PICKAXE
+    # Model Data is Used For Resource Packs and IS the only value checked to ensure the validity of a bedrock mining pickaxe
+    # The idea behind the only value checked is to allow players to upgrade and rename their pickaxes
+    modelData: 15912153
     name: "&cBedrock Pickaxe"
     # Set 0 or -1 for full durability
     durability: 0
@@ -34,6 +37,20 @@ break-blocks:
     duration: 500
     # Durability cost (pickaxe durability)
     durability: 2
+    # Set to true if you want the block to be dropped.
+    drop: false
+  ENDER_PORTAL:
+    # Time to break that block in ticks
+    duration: 0
+    # Durability cost (pickaxe durability)
+    durability: 0
+    # Set to true if you want the block to be dropped.
+    drop: false
+  BARRIER:
+    # Time to break that block in ticks
+    duration: 700
+    # Durability cost (pickaxe durability)
+    durability: 3
     # Set to true if you want the block to be dropped.
     drop: false
 
