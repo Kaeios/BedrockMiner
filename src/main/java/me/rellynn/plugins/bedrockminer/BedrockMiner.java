@@ -19,6 +19,7 @@ import java.util.*;
 public final class BedrockMiner extends JavaPlugin {
 
     private final List<BedrockTool> tools = new ArrayList<>();
+    private final List<Material> globalTools = new ArrayList<>();
 
     private final List<WorldSetting> worldSettings = new ArrayList<>();
     private boolean spigot = false;
@@ -67,6 +68,7 @@ public final class BedrockMiner extends JavaPlugin {
                 if(getConfig().isSet("tool."+ key +".flags")) return;
                 getConfig().set("tool."+ key +".flags", Collections.emptyList());
             });
+            getConfig().set("global-tools", Collections.emptyList());
         }
         saveConfig();
     }
@@ -92,9 +94,14 @@ public final class BedrockMiner extends JavaPlugin {
 
             tools.add(new BedrockTool(material, name, lore, enchants, (short) durability, repairable, modelData, flags));
         });
+
+        getConfig().getStringList("global-tools").forEach(materialName -> globalTools.add(Material.valueOf(materialName.toUpperCase())));
     }
 
     public boolean isTool(final ItemStack item){
+        if(item == null && globalTools.contains(Material.AIR)) return true;
+        if(item == null) return false;
+        if(globalTools.contains(item.getType())) return true;
         for(BedrockTool tool : tools){
             if(tool.matchItem(item)) return true;
         }
