@@ -53,6 +53,7 @@ public class BedrockTool {
 //            if (item.getEnchantmentLevel(enchant) < enchants.get(enchant)) return false;
 //        }
 
+        if(!item.getItemMeta().hasCustomModelData()) return false;
         if (!(item.getItemMeta().getCustomModelData() == modelData)) return false;
 
         return true;
