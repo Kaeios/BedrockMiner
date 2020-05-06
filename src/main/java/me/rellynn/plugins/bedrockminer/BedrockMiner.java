@@ -64,7 +64,7 @@ public final class BedrockMiner extends JavaPlugin {
     private void upgradeConfig(){
         if(getConfig().getDouble("config") == 1.8){
             getConfig().set("config", 1.9);
-            getConfig().getConfigurationSection("tools").getKeys(false).forEach(key -> {
+            getConfig().getConfigurationSection("tool").getKeys(false).forEach(key -> {
                 if(getConfig().isSet("tool."+ key +".flags")) return;
                 getConfig().set("tool."+ key +".flags", Collections.emptyList());
             });
