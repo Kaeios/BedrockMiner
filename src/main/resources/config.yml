@@ -1,5 +1,5 @@
 # Config version. PLEASE DO NOT EDIT.
-config: 1.8
+config: 1.9
 
 # All materials listed here will allow players to mine bedrock. List of materials: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 global-tools:
