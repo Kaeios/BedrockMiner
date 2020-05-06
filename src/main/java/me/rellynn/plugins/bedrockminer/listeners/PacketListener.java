@@ -46,21 +46,24 @@ public final class PacketListener extends PacketAdapter {
 
     private void breakBlock(final Block block, final BlockPosition position, final Player player) {
         final BlockBreakEvent breakEvt = new BlockBreakEvent(block, player);
+        breakEvt.setDropItems(true);
         // Use a block break event to be compatible with protection plugins
         Bukkit.getPluginManager().callEvent(breakEvt);
         if(breakEvt.isCancelled()) return;
         final Material blockType = block.getType();
         final Configuration config = plugin.getConfig();
 
-        // Drop block
-        if(config.getBoolean("break-blocks."+ blockType.toString() + ".drop", false)){
-            if(!block.getDrops().isEmpty()){
-                block.breakNaturally(player.getItemInHand());
-            } else {
-                block.setType(Material.AIR);
-                block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(blockType, 1));
+        if(breakEvt.isDropItems()){
+            // Drop block
+            if(config.getBoolean("break-blocks."+ blockType.toString() + ".drop", false)){
+                if(!block.getDrops().isEmpty()){
+                    block.breakNaturally(player.getItemInHand());
+                } else {
+                    block.setType(Material.AIR);
+                    block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(blockType, 1));
 
-                player.playSound(block.getLocation(), Sound.BLOCK_STONE_BREAK, SoundCategory.BLOCKS, (float) 1.0, (float) 0.8); // Basically the generic block breaking sound. Needed because player isn't actually breaking bedrock, just we are faking it!!!
+                    player.playSound(block.getLocation(), Sound.BLOCK_STONE_BREAK, SoundCategory.BLOCKS, (float) 1.0, (float) 0.8); // Basically the generic block breaking sound. Needed because player isn't actually breaking bedrock, just we are faking it!!!
+                }
             }
         }
 
