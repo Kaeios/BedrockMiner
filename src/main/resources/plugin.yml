@@ -1,6 +1,7 @@
 name: BedrockMiner
 main: me.rellynn.plugins.bedrockminer.BedrockMiner
 authors: [Rellynn, Kaeios]
+api-version: 1.15
 version: ${project.version}
 depend: [ProtocolLib]
 commands:
