@@ -1,9 +1,13 @@
 # Config version. PLEASE DO NOT EDIT.
 config: 1.8
 
+# All materials listed here will allow players to mine bedrock
+global-tools:
+  - DIAMOND_PICKAXE
+
 tool:
   '1':
-    tool: GOLD_PICKAXE
+    tool: GOLDEN_PICKAXE
     # Model Data is Used For Resource Packs and IS the only value checked to ensure the validity of a bedrock mining pickaxe
     # The idea behind the only value checked is to allow players to upgrade and rename their pickaxes
     modelData: 15912153
