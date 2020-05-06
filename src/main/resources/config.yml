@@ -1,7 +1,7 @@
 # Config version. PLEASE DO NOT EDIT.
 config: 1.8
 
-# All materials listed here will allow players to mine bedrock
+# All materials listed here will allow players to mine bedrock. List of materials: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 global-tools:
   - DIAMOND_PICKAXE
 
@@ -28,7 +28,7 @@ tool:
 # List of blocks you can break with the pickaxe
 break-blocks:
   # Material name
-  # Material list: https://pastebin.com/nNxKj43t
+  # Material list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
   BEDROCK:
     # Time to break that block in ticks (affected by efficiency)
     # 0 ticks = instant break
