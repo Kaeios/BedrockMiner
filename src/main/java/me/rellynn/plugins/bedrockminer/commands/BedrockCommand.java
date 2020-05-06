@@ -23,7 +23,7 @@ public class BedrockCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
         if(args.length == 1 && args[0].equalsIgnoreCase("reload")){
-            plugin.reloadConfig();
+            plugin.reloadPluginConfig();
             commandSender.sendMessage("§aPlugin reloaded.");
         }else if(args.length == 3){
             if(args[0].equals("give")) {
@@ -58,11 +58,13 @@ public class BedrockCommand implements CommandExecutor {
         commandSender.sendMessage("§eList of tools:");
         int index = 0;
         for(BedrockTool tool : plugin.getTools()){
+
             final String helpText = "§8[§c"+ index++ +"§8] §e" + (tool.getName().equals("") ? tool.getMaterial().toString() : tool.getName());
             if(!(commandSender instanceof Player) || !plugin.isSpigot()) {
                 commandSender.sendMessage(helpText);
                 return;
             }
+
             final TextComponent text = new TextComponent(helpText);
             final BaseComponent[] hoverText = new BaseComponent[4 + tool.getLore().size() + tool.getEnchants().size()];
             hoverText[0] = new TextComponent("§cName: §e"+ (tool.getName().equals("") ? "none" : tool.getName()) +"\n");

@@ -47,10 +47,10 @@ public final class BedrockMiner extends JavaPlugin {
         });
     }
 
-    @Override
-    public void reloadConfig(){
-        super.reloadConfig();
+    public void reloadPluginConfig(){
+        reloadConfig();
         tools.clear();
+        globalTools.clear();
         loadTools();
         worldSettings.clear();
         loadWorldSettings();
@@ -69,8 +69,8 @@ public final class BedrockMiner extends JavaPlugin {
                 getConfig().set("tool."+ key +".flags", Collections.emptyList());
             });
             getConfig().set("global-tools", Collections.emptyList());
+            saveConfig();
         }
-        saveConfig();
     }
 
     public void loadTools(){
