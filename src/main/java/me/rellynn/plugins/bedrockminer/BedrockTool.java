@@ -3,6 +3,7 @@ package me.rellynn.plugins.bedrockminer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
@@ -21,8 +22,9 @@ public class BedrockTool {
     private short durability;
     private final Map<Enchantment, Integer> enchants;
     private final int modelData;
+    private final List<ItemFlag> flags;
 
-    public BedrockTool(Material material, String name, List<String> lore, Map<Enchantment, Integer> enchants, short durability, boolean repairable, int modelData) {
+    public BedrockTool(Material material, String name, List<String> lore, Map<Enchantment, Integer> enchants, short durability, boolean repairable, int modelData, List<ItemFlag> flags) {
         if(lore == null) lore = Collections.emptyList();
         if(durability <= 0) durability = material.getMaxDurability();
         name = ChatColor.translateAlternateColorCodes('&', name);
@@ -37,6 +39,7 @@ public class BedrockTool {
         this.durability = durability;
         this.enchants = enchants;
         this.modelData = modelData;
+        this.flags = flags;
     }
 
     public boolean matchItem(final ItemStack item) {
@@ -80,6 +83,7 @@ public class BedrockTool {
         final ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(name);
         meta.setLore(lore);
+        flags.forEach(meta::addItemFlags);
         meta.setCustomModelData(modelData);
 
         enchants.forEach((enchant, level) -> meta.addEnchant(enchant, level, true));

@@ -6,6 +6,7 @@ import me.rellynn.plugins.bedrockminer.listeners.PacketListener;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -60,68 +61,12 @@ public final class BedrockMiner extends JavaPlugin {
     }
 
     private void upgradeConfig(){
-        if(getConfig().getDouble("config") == 1.0){
-            getConfig().set("config", 1.1);
-            getConfig().set("drop-bedrock", false);
-        }
-        if(getConfig().getDouble("config") == 1.1){
-            getConfig().set("config", 1.2);
-            getConfig().set("protection-height", 5);
-        }
-        if(getConfig().getDouble("config") == 1.2){
-            getConfig().set("config", 1.3);
-            getConfig().set("break-blocks.BEDROCK", getConfig().getInt("base-time", 200));
-        }
-        if(getConfig().getDouble("config") == 1.3){
-            getConfig().set("config", 1.4);
-            getConfig().set("tool.type", Collections.singletonList(getConfig().getString("tool.type")));
-        }
-        if(getConfig().getDouble("config") == 1.4){
-            getConfig().set("config", 1.5);
-            getConfig().getConfigurationSection("break-blocks").getKeys(false).forEach(block ->{
-                final int duration = getConfig().getInt("break-blocks."+ block, 300);
-                getConfig().set("break-blocks."+ block, null);
-                getConfig().set("break-blocks."+ block +".duration", duration);
-                getConfig().set("break-blocks."+ block +".durability", 1);
-                getConfig().set("break-blocks."+ block +".drop", getConfig().getBoolean("drop-bedrock"));
+        if(getConfig().getDouble("config") == 1.8){
+            getConfig().set("config", 1.9);
+            getConfig().getConfigurationSection("tools").getKeys(false).forEach(key -> {
+                if(getConfig().isSet("tool."+ key +".flags")) return;
+                getConfig().set("tool."+ key +".flags", Collections.emptyList());
             });
-        }
-        if(getConfig().getDouble("config") == 1.5){
-            getConfig().set("config", 1.6);
-            final int silkLevel = getConfig().getInt("tool.silk-level");
-            getConfig().set("tool.silk-level", null);
-            int index = 0;
-            for(final String tool : getConfig().getStringList("tool.type")){
-                index++;
-                getConfig().set("tool."+ index +".tool", tool.toUpperCase());
-                getConfig().set("tool." + index +".name", "");
-                getConfig().set("tool." + index +".lore", Collections.emptyList());
-                if(silkLevel <= 0) continue;
-                getConfig().set("tool."+ index +".enchantments."+ Enchantment.SILK_TOUCH.getName(), silkLevel);
-            }
-            getConfig().set("tool.type", null);
-        }
-        if(getConfig().getDouble("config") == 1.6){
-            getConfig().set("config", 1.7);
-            for(final String tool : getConfig().getConfigurationSection("tool").getKeys(false)){
-                getConfig().set("tool."+ tool +".durability", -1);
-                getConfig().set("tool."+ tool +".repairable", true);
-            }
-        }
-        if(getConfig().getDouble("config") == 1.7){
-            getConfig().set("config", 1.8);
-            getConfig().set("regions-list-is-whitelist", true);
-            getConfig().set("regions-list", Collections.singletonList("no-bedrock-break"));
-
-            getConfig().set("default-world-settings.enabled", true);
-            getConfig().set("default-world-settings.min-height", getConfig().getInt("protection-height"));
-            getConfig().set("default-world-settings.max-height", 256);
-
-            getConfig().set("worlds-settings.world_nether.enabled", true);
-            getConfig().set("worlds-settings.world_nether.min-height", getConfig().getInt("protection-height"));
-            getConfig().set("worlds-settings.world_nether.max-height", 123);
-
-            getConfig().set("protection-height", null);
         }
         saveConfig();
     }
@@ -135,14 +80,17 @@ public final class BedrockMiner extends JavaPlugin {
             final int durability = section.getInt(key +".durability", -1);
             final boolean repairable = section.getBoolean(key + ".repairable", true);
             final Map<Enchantment, Integer> enchants = new HashMap<>();
+            final List<ItemFlag> flags = new ArrayList<>();
 
             section.getConfigurationSection(key +".enchantments").getKeys(false).forEach(enchant ->{
                 enchants.put(Enchantment.getByName(enchant.toUpperCase()), section.getInt(key +".enchantments."+ enchant));
             });
 
+            section.getStringList(key + ".flags").forEach(flagName -> flags.add(ItemFlag.valueOf(flagName.toUpperCase())));
+
             final int modelData = section.getInt(key +".modelData", 15912153); // 15912153 is just an arbitrary integer that is supposedly unique and won't interfere with other plugins
 
-            tools.add(new BedrockTool(material, name, lore, enchants, (short) durability, repairable, modelData));
+            tools.add(new BedrockTool(material, name, lore, enchants, (short) durability, repairable, modelData, flags));
         });
     }
 
