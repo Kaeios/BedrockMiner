@@ -84,9 +84,13 @@ public final class BedrockMiner extends JavaPlugin {
             final Map<Enchantment, Integer> enchants = new HashMap<>();
             final List<ItemFlag> flags = new ArrayList<>();
 
-            section.getConfigurationSection(key +".enchantments").getKeys(false).forEach(enchant ->{
-                enchants.put(Enchantment.getByName(enchant.toUpperCase()), section.getInt(key +".enchantments."+ enchant));
-            });
+            ConfigurationSection enchantSection = section.getConfigurationSection(key +".enchantments");
+
+            if(enchantSection != null) {
+                enchantSection.getKeys(false).forEach(enchant ->{
+                    enchants.put(Enchantment.getByName(enchant.toUpperCase()), section.getInt(key +".enchantments."+ enchant));
+                });
+            }
 
             section.getStringList(key + ".flags").forEach(flagName -> flags.add(ItemFlag.valueOf(flagName.toUpperCase())));
 

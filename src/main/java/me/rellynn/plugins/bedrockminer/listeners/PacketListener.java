@@ -55,14 +55,12 @@ public final class PacketListener extends PacketAdapter {
 
         if(breakEvt.isDropItems()){
             // Drop block
-            if(config.getBoolean("break-blocks."+ blockType.toString() + ".drop", false)){
-                if(!block.getDrops().isEmpty()){
-                    block.breakNaturally(player.getItemInHand());
+            if(config.getBoolean("break-blocks."+ blockType.toString() + ".drop", false)) {
+                if (!block.getDrops().isEmpty()) {
+                    block.breakNaturally(player.getInventory().getItemInMainHand());
                 } else {
                     block.setType(Material.AIR);
                     block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(blockType, 1));
-
-                    player.playSound(block.getLocation(), Sound.BLOCK_STONE_BREAK, SoundCategory.BLOCKS, (float) 1.0, (float) 0.8); // Basically the generic block breaking sound. Needed because player isn't actually breaking bedrock, just we are faking it!!!
                 }
             }
         }
@@ -95,8 +93,9 @@ public final class PacketListener extends PacketAdapter {
         player.updateInventory();
 
         // Destroy block with setType() to prevent dropping
+        player.playSound(block.getLocation(), Sound.BLOCK_STONE_BREAK, SoundCategory.BLOCKS, (float) 1.0, (float) 0.8); // Basically the generic block breaking sound. Needed because player isn't actually breaking bedrock, just we are faking it!!!
+        player.playEffect(block.getLocation(), Effect.STEP_SOUND, blockType);
         block.setType(Material.AIR);
-        PacketUtils.broadcastBlockBreakEffectPacket(position, block.getType());
     }
 
     public void onPacketReceiving(final PacketEvent evt) {
